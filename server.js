@@ -1,5 +1,6 @@
 const express = require('express');
 const http = require('http');
+const path = require('path');
 const { Server } = require('socket.io');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 const OpenAI = require('openai');
@@ -10,7 +11,12 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
-app.use(express.static('public'));
+// Statik fayllarni (index.html) asosiy katalogdan o'qish
+app.use(express.static(__dirname));
+
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
 
 // AI SDK-larni sozlash
 const aiClients = {
