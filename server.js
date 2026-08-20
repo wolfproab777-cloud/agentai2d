@@ -14,19 +14,23 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-// 1. Gemini REST API
+// 1. Gemini REST API (To'g'rilangan model nomi bilan)
 async function getGeminiResponse(prompt) {
     const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) return "GEMINI_API_KEY kiritilmagan.";
     
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+    // Model nomi gemini-2.0-flash ga o'zgartirildi
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+    
     const response = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
     });
+    
     const data = await response.json();
     return data.error ? "Gemini Xatosi: " + data.error.message : data.candidates[0].content.parts[0].text;
+}
 }
 
 // 2. ChatGPT REST API
