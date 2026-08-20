@@ -37,10 +37,11 @@ io.on('connection', (socket) => {
         try {
             let responseText = "";
 
-            if (model === 'gemini' && aiClients.gemini) {
-                const geminiModel = aiClients.gemini.getGenerativeModel({ model: "gemini-1.5-flash" });
+           if (model === 'gemini' && aiClients.gemini) {
+                const geminiModel = aiClients.gemini.getGenerativeModel({ model: "gemini-pro" });
                 const res = await geminiModel.generateContent(prompt);
                 responseText = res.response.text();
+            }
             } 
             else if (model === 'chatgpt' && aiClients.openai) {
                 const res = await aiClients.openai.chat.completions.create({
