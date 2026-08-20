@@ -2,31 +2,34 @@
 <html lang="uz">
 <head>
     <meta charset="UTF-8">
-    <title>2D Pixel Real-time AI Office</title>
+    <title>2D Ultra Pixel AI HQ</title>
     <script src="/socket.io/socket.io.js"></script>
     <style>
-        body { background: #121218; color: #fff; font-family: monospace; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
-        #canvas-container { position: relative; border: 4px solid #444; }
-        canvas { background: #c2a679; image-rendering: pixelated; display: block; }
-        #chat-interface { margin-top: 10px; width: 640px; display: flex; gap: 10px; }
-        input { flex: 1; padding: 10px; background: #222; border: 1px solid #555; color: #fff; }
-        button { padding: 10px 20px; background: #007acc; color: #fff; border: none; cursor: pointer; }
-        #dialog-box { position: absolute; bottom: 10px; left: 10px; right: 10px; background: rgba(0,0,0,0.85); border: 2px solid #00d2ff; padding: 10px; font-size: 13px; max-height: 100px; overflow-y: auto; }
+        body { background: #0f0f15; color: #fff; font-family: 'Segoe UI', monospace; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
+        h1 { margin: 10px 0; font-size: 20px; color: #00d2ff; letter-spacing: 2px; }
+        #canvas-container { position: relative; border: 4px solid #2a2a38; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
+        canvas { background: #222; image-rendering: pixelated; display: block; border-radius: 4px; }
+        #chat-interface { margin-top: 15px; width: 800px; display: flex; gap: 10px; }
+        input { flex: 1; padding: 12px; background: #1a1a24; border: 2px solid #333; border-radius: 6px; color: #fff; font-size: 14px; outline: none; }
+        input:focus { border-color: #00d2ff; }
+        button { padding: 12px 24px; background: #0088ff; color: #fff; font-weight: bold; border: none; border-radius: 6px; cursor: pointer; transition: 0.2s; }
+        button:hover { background: #00aaff; }
+        #dialog-box { position: absolute; bottom: 12px; left: 12px; right: 12px; background: rgba(15, 15, 25, 0.92); border: 2px solid #00d2ff; border-radius: 6px; padding: 12px; font-size: 13px; max-height: 90px; overflow-y: auto; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
     </style>
 </head>
 <body>
 
-<h1>2D PIXEL REAL-TIME AI OFFICE</h1>
+<h1>2D PIXEL REAL-TIME AI HEADQUARTERS</h1>
 <div id="canvas-container">
-    <canvas id="office" width="640" height="360"></canvas>
+    <canvas id="office" width="800" height="420"></canvas>
     <div id="dialog-box">
-        <b id="agent-name">Gemini Bot (GEMINI)</b>
-        <p id="agent-text">Har bir agent alohida AI modeliga ulangan (Gemini, ChatGPT, Claude).</p>
+        <b id="agent-name" style="color:#00d2ff;">Gemini Bot (GEMINI)</b>
+        <p id="agent-text" style="margin: 5px 0 0 0;">Agentni tanlang va savolingizni yo'llang...</p>
     </div>
 </div>
 
 <div id="chat-interface">
-    <input type="text" id="userInput" placeholder="Agentga savol bering...">
+    <input type="text" id="userInput" placeholder="Tanlangan AI agentiga buyruq yoki savol bering...">
     <button onclick="sendPrompt()">Yuborish</button>
 </div>
 
@@ -38,49 +41,106 @@ const ctx = canvas.getContext('2d');
 let selectedAgent = 1;
 
 const agents = [
-    { id: 1, name: "Gemini Bot", model: "gemini", color: "#4285F4", x: 120, y: 150, text: "Salom! Men Gemini AI man." },
-    { id: 2, name: "ChatGPT Bot", model: "chatgpt", color: "#10a37f", x: 320, y: 150, text: "Salom! Men ChatGPT AI man." },
-    { id: 3, name: "Claude Bot", model: "claude", color: "#d97706", x: 520, y: 150, text: "Salom! Men Claude AI man." }
+    { id: 1, name: "Gemini AI", model: "gemini", color: "#4285F4", x: 160, y: 220, text: "Salom! Men Google Gemini AI modeliman." },
+    { id: 2, name: "ChatGPT 4o", model: "chatgpt", color: "#10a37f", x: 400, y: 220, text: "Salom! Men OpenAI ChatGPT modeliman." },
+    { id: 3, name: "Claude 3.5", model: "claude", color: "#d97706", x: 640, y: 220, text: "Salom! Men Anthropic Claude modeliman." }
 ];
 
-function draw() {
+function drawOffice() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // 1. Devor va Pol
+    ctx.fillStyle = '#1e1e28'; // Devor
+    ctx.fillRect(0, 0, canvas.width, 100);
     
-    // Pol va xona
-    ctx.fillStyle = '#b59363';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = '#333';
-    ctx.fillRect(0, 0, canvas.width, 30);
+    ctx.fillStyle = '#171720'; // Plintus
+    ctx.fillRect(0, 95, canvas.width, 10);
 
-    // Agentlarni chizish
-    agents.forEach(a => {
-        // Stol
-        ctx.fillStyle = '#5c3a1e';
-        ctx.fillRect(a.x - 30, a.y - 10, 60, 30);
-        
-        // Kompyuter
-        ctx.fillStyle = '#111';
-        ctx.fillRect(a.x - 10, a.y - 25, 20, 15);
+    // Yog'och parket
+    ctx.fillStyle = '#8B5A2B';
+    ctx.fillRect(0, 105, canvas.width, canvas.height - 105);
+    
+    // Parket chiziqlari
+    ctx.strokeStyle = '#734a22';
+    ctx.lineWidth = 2;
+    for(let y = 105; y < canvas.height; y += 30) {
+        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
+    }
 
-        // Agent (Piksel)
-        ctx.fillStyle = a.color;
-        ctx.fillRect(a.x - 8, a.y - 40, 16, 16);
-
-        // Tanlangan agent effekti
-        if(a.id === selectedAgent) {
-            ctx.strokeStyle = '#fff';
-            ctx.strokeRect(a.x - 10, a.y - 42, 20, 20);
-        }
-
-        ctx.fillStyle = '#fff';
-        ctx.font = '10px monospace';
-        ctx.textAlign = 'center';
-        ctx.fillText(a.name, a.x, a.y - 48);
+    // 2. Oynalar va Manzara
+    [80, 320, 560].forEach(wx => {
+        ctx.fillStyle = '#0f172a';
+        ctx.fillRect(wx, 20, 120, 60);
+        ctx.fillStyle = '#38bdf8'; // Oyna porlashi
+        ctx.fillRect(wx + 5, 25, 52, 50);
+        ctx.fillRect(wx + 63, 25, 52, 50);
     });
 
-    requestAnimationFrame(draw);
+    // 3. O'simliklar (Gullar)
+    [30, 750].forEach(px => {
+        ctx.fillStyle = '#a855f7'; // Vaksa
+        ctx.fillRect(px, 120, 24, 30);
+        ctx.fillStyle = '#22c55e'; // Barmaklar
+        ctx.beginPath(); ctx.arc(px + 12, 110, 18, 0, Math.PI * 2); ctx.fill();
+    });
+
+    // 4. Ish O'rinlari va AI Agentlar
+    agents.forEach(a => {
+        // Gilam
+        ctx.fillStyle = 'rgba(0,0,0,0.15)';
+        ctx.beginPath(); ctx.ellipse(a.x, a.y + 20, 60, 25, 0, 0, Math.PI * 2); ctx.fill();
+
+        // Kreslo (Orqa tomoni)
+        ctx.fillStyle = '#111';
+        ctx.fillRect(a.x - 18, a.y - 50, 36, 40);
+
+        // Agent (Piksel Harakatdagi Dasturchi)
+        ctx.fillStyle = a.color;
+        ctx.fillRect(a.x - 12, a.y - 40, 24, 25); // Tana
+        ctx.fillStyle = '#fbcfe8';
+        ctx.fillRect(a.x - 8, a.y - 55, 16, 15); // Bosh
+
+        // Kreslo o'rindig'i
+        ctx.fillStyle = '#222';
+        ctx.fillRect(a.x - 16, a.y - 15, 32, 10);
+
+        // Katta Zamonaviy Stol
+        ctx.fillStyle = '#334155'; // Stol usti
+        ctx.fillRect(a.x - 55, a.y - 10, 110, 35);
+        ctx.fillStyle = '#0f172a'; // Stol oyoqlari
+        ctx.fillRect(a.x - 50, a.y + 25, 10, 25);
+        ctx.fillRect(a.x + 40, a.y + 25, 10, 25);
+
+        // Ikki qavatli Monitor
+        ctx.fillStyle = '#020617'; // Monitor ramkasi
+        ctx.fillRect(a.x - 25, a.y - 35, 50, 25);
+        ctx.fillStyle = '#38bdf8'; // Monitor ekrani
+        ctx.fillRect(a.x - 22, a.y - 32, 44, 19);
+
+        // Klaviatura & Sichqoncha
+        ctx.fillStyle = '#94a3b8';
+        ctx.fillRect(a.x - 15, a.y + 5, 20, 6);
+        ctx.fillStyle = '#e2e8f0';
+        ctx.fillRect(a.x + 12, a.y + 6, 5, 4);
+
+        // Tanlangan Agent Boshidagi Nurlar Effecti
+        if(a.id === selectedAgent) {
+            ctx.strokeStyle = '#00d2ff';
+            ctx.lineWidth = 3;
+            ctx.strokeRect(a.x - 60, a.y - 65, 120, 120);
+        }
+
+        // Agent Ismi
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 12px monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText(a.name, a.x, a.y - 72);
+    });
+
+    requestAnimationFrame(drawOffice);
 }
-draw();
+
+drawOffice();
 
 canvas.addEventListener('click', (e) => {
     const rect = canvas.getBoundingClientRect();
@@ -88,7 +148,7 @@ canvas.addEventListener('click', (e) => {
     const y = e.clientY - rect.top;
 
     agents.forEach(a => {
-        if (Math.abs(a.x - x) < 30 && Math.abs(a.y - y) < 30) {
+        if (Math.abs(a.x - x) < 60 && Math.abs(a.y - y) < 60) {
             selectedAgent = a.id;
             document.getElementById('agent-name').innerText = `${a.name} (${a.model.toUpperCase()})`;
             document.getElementById('agent-text').innerText = a.text;
@@ -101,7 +161,6 @@ function sendPrompt() {
     if (!input.value) return;
 
     const currentAgent = agents.find(a => a.id === selectedAgent);
-    
     document.getElementById('agent-text').innerText = "AI javob tayyorlamoqda...";
 
     socket.emit('ask_agent', {
