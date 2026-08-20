@@ -38,9 +38,11 @@ io.on('connection', (socket) => {
             let responseText = "";
 
             if (model === 'gemini' && aiClients.gemini) {
-                const geminiModel = aiClients.gemini.getGenerativeModel({ model: "gemini-1.5-pro" });
+                // model nomiga 'models/' prefiksi qo'shildi
+                const geminiModel = aiClients.gemini.getGenerativeModel({ model: "models/gemini-1.5-pro" });
                 const res = await geminiModel.generateContent(prompt);
                 responseText = res.response.text();
+            }
             } 
             else if (model === 'chatgpt' && aiClients.openai) {
                 const res = await aiClients.openai.chat.completions.create({
