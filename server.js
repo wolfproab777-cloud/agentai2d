@@ -1,7 +1,7 @@
 const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
-const { GoogleGenAI } = require('@google/genai');
+const { GoogleGenerativeAI } = require('@google/generative-ai');
 const OpenAI = require('openai');
 const Anthropic = require('@anthropic-ai/sdk');
 require('dotenv').config();
@@ -12,9 +12,9 @@ const io = new Server(server);
 
 app.use(express.static('public'));
 
-// AI SDK-larni sozlash (Render Environment Variables orqali olinadi)
+// AI SDK-larni sozlash
 const aiClients = {
-    gemini: process.env.GEMINI_API_KEY ? new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY }) : null,
+    gemini: process.env.GEMINI_API_KEY ? new GoogleGenerativeAI(process.env.GEMINI_API_KEY) : null,
     openai: process.env.OPENAI_API_KEY ? new OpenAI({ apiKey: process.env.OPENAI_API_KEY }) : null,
     claude: process.env.ANTHROPIC_API_KEY ? new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY }) : null
 };
@@ -26,18 +26,15 @@ io.on('connection', (socket) => {
     socket.on('ask_agent', async (data) => {
         const { agentId, model, prompt } = data;
         
-        // Agent o'ylash holatiga o'tadi
         io.emit('agent_status', { agentId, status: 'O`ylanmoqda...' });
 
         try {
             let responseText = "";
 
             if (model === 'gemini' && aiClients.gemini) {
-                const res = await aiClients.gemini.models.generateContent({
-                    model: 'gemini-2.5-flash',
-                    contents: prompt,
-                });
-                responseText = res.text;
+                const geminiModel = aiClients.gemini.getGenerativeModel({ model: "gemini-1.5-flash" });
+                const res = await geminiModel.generateContent(prompt);
+                responseText = res.response.text();
             } 
             else if (model === 'chatgpt' && aiClients.openai) {
                 const res = await aiClients.openai.chat.completions.create({
@@ -55,10 +52,9 @@ io.on('connection', (socket) => {
                 responseText = res.content[0].text;
             } 
             else {
-                responseText = "API Kalit sozlanmagan yoki model topilmadi.";
+                responseText = "API kalit kiritilmagan yoki model sozlanmagan.";
             }
 
-            // Javobni real vaqtda qaytarish
             io.emit('agent_response', {
                 agentId: agentId,
                 text: responseText
@@ -68,7 +64,7 @@ io.on('connection', (socket) => {
             console.error("Xatolik:", error);
             io.emit('agent_response', {
                 agentId: agentId,
-                text: "Xatolik yuz berdi: AI bilan ulanib bo'lmadi."
+                text: "Xatolik yuz berdi: AI bilan ulanishda muammo bo'ldi."
             });
         }
     });
