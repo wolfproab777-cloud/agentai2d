@@ -11,7 +11,7 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
-// Statik fayllarni (index.html) asosiy katalogdan o'qish
+// Statik fayllarni o'qish
 app.use(express.static(__dirname));
 
 app.get('/', (req, res) => {
@@ -36,13 +36,11 @@ io.on('connection', (socket) => {
 
         try {
             let responseText = "";
-        
+
             if (model === 'gemini' && aiClients.gemini) {
-                // gemini-1.5-flash o'rniga gemini-2.5-flash ishlatamiz
-                const geminiModel = aiClients.gemini.getGenerativeModel({ model: "gemini-2.5-flash" });
+                const geminiModel = aiClients.gemini.getGenerativeModel({ model: "gemini-1.5-pro" });
                 const res = await geminiModel.generateContent(prompt);
                 responseText = res.response.text();
-            }
             } 
             else if (model === 'chatgpt' && aiClients.openai) {
                 const res = await aiClients.openai.chat.completions.create({
